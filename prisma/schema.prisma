@@ -1,0 +1,40 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Book {
+  id            String @id @default(uuid())
+  title         String
+  author        String
+  coverImageUrl String
+  pageCount     Int
+  publisher     String
+  synopsis      String
+
+  // Relation field
+  listItem      ListItem[]
+}
+
+model User {
+  id       String @id @default(uuid())
+  username String
+  password String
+
+  // Relation field
+  listItem ListItem[]
+}
+
+model ListItem {
+  id         String @id @default(uuid())
+  rating     Int?
+  notes      String?
+  startDate  DateTime @default(now())
+  finishDate DateTime?
+
+  // Relation field
+  bookId  String
+  book    Book @relation(fields: [bookId], references: [id])
+  ownerId String
+  user    User @relation(fields: [ownerId], references: [id])
+}
